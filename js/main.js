@@ -27,14 +27,14 @@ var game = {
           'data-x': x,
           'data-y': y,
           on: {
-            click: this.cellClicked
+            click: this.onCellClicked
           }
         }).appendTo(row);
       }
     }
   },
 
-  cellClicked: function () {
+  onCellClicked: function () {
     console.log(this);
   }
 
