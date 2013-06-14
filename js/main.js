@@ -146,6 +146,16 @@ var game = {
   newGame: function (e) {
     if (typeof e != 'undefined') e.preventDefault();
 
+    var gridSize = parseInt(prompt('How big do you want your grid? It is currently ' + this.gridSize + 'x' + this.gridSize + "\nEntering 10 gives you a 10x10 grid."));
+    var mineCount = parseInt(prompt("How many mines do you want in your game?"));
+
+    if (gridSize > 0)
+      this.gridSize = gridSize;
+
+    if (mineCount > 0) {
+      this.mineCount = mineCount;
+    }
+
     $('#board div').remove();
 
     this.mines = [];
