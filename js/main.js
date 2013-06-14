@@ -190,7 +190,7 @@ var game = {
       var surrounding = game.getSurroundingMines(x, y);
 
       cell.addClass('correct');
-      cell.html(surrounding.length);
+      cell.html(surrounding.mines.length);
 
       // Blow up the surrounding cells
       if (surrounding.mines.length === 0) {
