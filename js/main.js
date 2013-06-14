@@ -49,7 +49,7 @@ var game = {
 
   // Determine the position of a specific amount of mines
   determineMines: function () {
-    for (i = 0; i < this.mineCount; i++) {
+    for (i = 0; i <= this.mineCount; i++) {
       var x = this.getRand(1, this.gridSize);
       var y = this.getRand(1, this.gridSize);
       var coords = x + 'x' + y;
