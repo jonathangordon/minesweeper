@@ -1,7 +1,7 @@
 var game = {
 
   // Debug mode
-  debug: true,
+  debug: false,
 
   gridSize: 8,
   mineCount: 10,
@@ -23,6 +23,7 @@ var game = {
   // Bind events for buttons
   bindEvents: function () {
     $('#actionNew').click($.proxy(this.newGame, this));
+    $('#actionCheat').click($.proxy(this.showMines, this));
   },
 
   // Render grid in the DOM
@@ -56,11 +57,20 @@ var game = {
         this.mines.push(coords);
 
         if (this.debug) {
-          $('div[data-x="' + x + '"][data-y="' + y + '"]').addClass('incorrect');
+          this.showMines();
         }
       }
+    }
+  },
 
-      console.log(coords);
+  // Show mine locations
+  showMines: function (e) {
+    if (typeof e != 'undefined') e.preventDefault();
+
+    for (i in this.mines) {
+      var coords = this.mines[i].split('x');
+      var x = coords[0], y = coords[1];
+      $('div[data-x="' + x + '"][data-y="' + y + '"]').addClass('incorrect');
     }
   },
 
@@ -94,7 +104,7 @@ var game = {
 
   // New game
   newGame: function (e) {
-    e.preventDefault();
+    if (typeof e != 'undefined') e.preventDefault();
 
     $('#board div').remove();
 
@@ -104,7 +114,6 @@ var game = {
 
   // Get a cell by coords
   getCellByCoords: function (x, y) {
-    console.log('div[data-x="' + x + '"][data-y="' + y + '"]');
     return $('div[data-x="' + x + '"][data-y="' + y + '"]');
   },
 
