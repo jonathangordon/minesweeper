@@ -1,5 +1,8 @@
 var game = {
 
+  // Debug mode
+  debug: true,
+
   gridSize: 8,
   mineCount: 10,
 
@@ -12,8 +15,14 @@ var game = {
 
   // Begin game
   continue: function () {
+    this.bindEvents();
     this.renderGrid();
     this.determineMines();
+  },
+
+  // Bind events for buttons
+  bindEvents: function () {
+    $('#actionNew').click($.proxy(this.newGame, this));
   },
 
   // Render grid in the DOM
@@ -46,7 +55,9 @@ var game = {
       while ($.inArray(coords, this.mines) == -1) {
         this.mines.push(coords);
 
-        $('div[data-x="' + x + '"][data-y="' + y + '"]').addClass('incorrect');
+        if (this.debug) {
+          $('div[data-x="' + x + '"][data-y="' + y + '"]').addClass('incorrect');
+        }
       }
 
       console.log(coords);
@@ -76,7 +87,19 @@ var game = {
 
   // End game
   endGame: function () {
-    //alert('Game is over!');
+    alert('Game is over!');
+
+    this.newGame();
+  },
+
+  // New game
+  newGame: function (e) {
+    e.preventDefault();
+
+    $('#board div').remove();
+
+    this.mines = [];
+    this.continue();
   },
 
   // Get a cell by coords
