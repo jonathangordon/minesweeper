@@ -160,6 +160,8 @@ var game = {
       alert('Winner!');
 
       this.newGame();
+    } else {
+      this.endGame();
     }
   },
 
