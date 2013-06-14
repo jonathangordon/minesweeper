@@ -23,6 +23,7 @@ var game = {
   // Bind events for buttons
   bindEvents: function () {
     $('#actionNew').click($.proxy(this.newGame, this));
+    $('#actionValidate').click($.proxy(this.validateGame, this));
     $('#actionCheat').click($.proxy(this.showMines, this));
   },
 
@@ -75,8 +76,10 @@ var game = {
   },
 
   // Count the surrounding mines from coordinates
-  countSurroundingMines: function (x, y) {
+  getSurroundingMines: function (x, y) {
     var count = 0;
+    var mines = [];
+    var cells = [];
 
     // Loop through mines and compare against coords
     for (i in this.mines) {
@@ -89,10 +92,47 @@ var game = {
 
       if (xDistance <= 1 && yDistance <= 1) {
         count++;
+
+        mines.push(mine);
       }
     }
 
-    return count;
+    // Only get surrounding cells if the count is 0, to save system resources
+    if (count === 0) {
+      // Top left
+      var cell = this.getCellByCoords(x - 1, y - 1);
+      if (cell.length) cells.push(cell);
+
+      // Top
+      var cell = this.getCellByCoords(x, y - 1);
+      if (cell.length) cells.push(cell);
+
+      // Top right
+      var cell = this.getCellByCoords(x + 1, y - 1);
+      if (cell.length) cells.push(cell);
+
+      // Right
+      var cell = this.getCellByCoords(x + 1, y);
+      if (cell.length) cells.push(cell);
+
+      // Bottom right
+      var cell = this.getCellByCoords(x + 1, y + 1);
+      if (cell.length) cells.push(cell);
+
+      // Bottom
+      var cell = this.getCellByCoords(x, y + 1);
+      if (cell.length) cells.push(cell);
+
+      // Bottom left
+      var cell = this.getCellByCoords(x - 1, y + 1);
+      if (cell.length) cells.push(cell);
+
+      // Left
+      var cell = this.getCellByCoords(x - 1, y);
+      if (cell.length) cells.push(cell);
+    }
+
+    return {mines: mines, cells: cells};
   },
 
   // End game
@@ -112,6 +152,17 @@ var game = {
     this.continue();
   },
 
+  // Validate game
+  validateGame: function (e) {
+    e.preventDefault();
+
+    if ($('.correct').length + $('.incorrect').length == (this.gridSize * this.gridSize)) {
+      alert('Winner!');
+
+      this.newGame();
+    }
+  },
+
   // Get a cell by coords
   getCellByCoords: function (x, y) {
     return $('div[data-x="' + x + '"][data-y="' + y + '"]');
@@ -124,8 +175,17 @@ var game = {
 
     // Did we guess correctly? If not, end game
     if ($.inArray(coords, game.mines) == -1) {
+      var surrounding = game.getSurroundingMines(x, y);
+
       cell.addClass('correct');
-      cell.html(game.countSurroundingMines(x, y));
+      cell.html(surrounding.length);
+
+      // Blow up the surrounding cells
+      if (surrounding.mines.length === 0) {
+        for (i in surrounding.cells) {
+          surrounding.cells[i].addClass('correct');
+        }
+      }
     } else {
       cell.addClass('incorrect');
       game.endGame();
