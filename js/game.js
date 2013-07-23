@@ -8,7 +8,7 @@ var Game = (function () {
       // should be a positive number less than 1
       this.mineProbability = ( ! mineProbability)? (1/3): mineProbability;
       this.numColumns      = ( ! numColumns)? 5: numColumns;
-      this.numRows         = ( ! numRows)? 5: numRows;
+      this.numRows         = ( ! numRows)? this.numColumns: numRows;
       this.rows            = [];
       this.numSafeTiles    = numRows * numColumns; // initial value
       this.numMineTiles    = 0; // initial value
@@ -213,11 +213,3 @@ var Game = (function () {
     Tile: Tile
   };
 })();
-
-
-$(function () {
-  //var game = new Game();
-  var grid = new Game.Grid('#board', 0.15, 17, 17, true);
-
-  grid.populate();
-});
