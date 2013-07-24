@@ -142,7 +142,8 @@ var Game = (function () {
 
     tile.setDisplay(mineCount);
 
-    if ( ! --this.numSafeTiles && this.status === null) {
+    --this.numSafeTiles;
+    if (this.numSafeTiles === 0 && this.status === null) {
       this.status = true;
       console.log('You won!');
     }
