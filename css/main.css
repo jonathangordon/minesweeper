@@ -38,8 +38,8 @@ body {
   -ms-user-select: none;
 }
 #board .row {
-  overflow: hidden;
-  margin: 0px 0px 1px 0px;
+  height: 50px;
+  margin: 1px 0px 1px 0px;
 }
 #board .row:last-child {
   margin: 0px;
@@ -59,6 +59,7 @@ body {
   margin: 0px 1px 0px 0px;
   cursor: pointer;
   box-sizing: border-box;
+  transition: background 0.25s;
 }
 #board .tile:last-child {
   margin: 0px;
@@ -77,5 +78,71 @@ body {
   color: #ddd;
 }
 #board .tile.incorrect {
-  background: #c00;
+  /*background: #c00;*/
+  color: #ccc;
+  font-size: 200%;
+  -webkit-animation-name: explode;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-timing-function: linear;
+  -webkit-transform: translateZ(0); /* use GPU if possible */
+
+  animation-name: explode;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  transform: translateZ(0); /* use GPU if possible */
+}
+
+@keyframes explode {
+  0% {
+    background: inherit;
+  }
+  20% {
+    background: red;
+    transform: scale(2,2);
+    border-radius: 25px;
+    opacity: 0.5;
+  }
+  30% {
+    background: yellow;
+  }
+  40% {
+    background: white;
+    z-index: 1;
+  }
+  95% {
+    border-radius: 25px;
+    opacity: 0;
+    transform: scale(4,4);
+  }
+  100% {
+    background: inherit;
+  }
+}
+@-webkit-keyframes explode {
+  0% {
+    background: inherit;
+  }
+  20% {
+    background: red;
+    -webkit-transform: scale(2,2);
+    border-radius: 25px;
+    opacity: 0.5;
+  }
+  30% {
+    background: yellow;
+  }
+  40% {
+    background: white;
+    z-index: 1;
+  }
+  95% {
+    border-radius: 25px;
+    opacity: 0;
+    -webkit-transform: scale(4,4);
+  }
+  100% {
+    background: inherit;
+  }
 }

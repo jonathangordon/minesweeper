@@ -203,6 +203,7 @@ var Game = (function () {
   };
   Tile.prototype.explode = function (noChainReaction) {
     this.el.addClass('incorrect');
+    this.setDisplay('&#9760;');
 
     console.log('*BOOM!*');
     (noChainReaction) || this.explodeCallback(this);
