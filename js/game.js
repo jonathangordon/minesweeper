@@ -151,6 +151,7 @@ var Game = (function () {
 
   var Tile = function (hasMine, position, revealCallback, explodeCallback, hint) {
     this.hasMine    = hasMine;
+    this.isExploded = false;
     this.position   = position;
     this.isRevealed = false;
     this.el         = $('<div>', {class: 'tile'});
@@ -174,7 +175,7 @@ var Game = (function () {
     if (e.which > 1) this.toggleFlag();
   };
   Tile.prototype.toggleFlag = function () {
-    if ( ! this.isRevealed) {
+    if ( ! this.isRevealed &&  ! this.isExploded) {
       if ( ! this.isFlagged) {
         this.isFlagged = true;
         this.setDisplay('&#9873;');
@@ -199,15 +200,16 @@ var Game = (function () {
     this.isRevealed = true;
     this.el.addClass('correct');
     this.revealCallback(this);
-
-    if (this.hasMine) this.explode(); 
   };
   Tile.prototype.explode = function (noChainReaction) {
-    this.el.addClass('incorrect');
-    this.setDisplay('&#9760;');
-
     console.log('*BOOM!*');
-    (noChainReaction) || this.explodeCallback(this);
+
+    if ( ! this.isFlagged) {
+      this.setDisplay('&#9760;');
+      this.isExploded = true;
+      this.el.addClass('incorrect');
+    }
+    if (noChainReaction !== true) this.explodeCallback(this);
   };
 
   return {
