@@ -159,11 +159,33 @@ var Game = (function () {
     this.revealCallback  = revealCallback  || $.noop;
     this.explodeCallback = explodeCallback || $.noop;
 
-    this.el
-      .contextmenu(function (e) {
-        e.preventDefault();
-      })
-      .mousedown(this.handleClick.bind(this));
+    var touchDevices = /iphone|ipad|ipod|android/i;
+    var isTouch = touchDevices.test(navigator.userAgent);
+
+    if (isTouch) {
+      var touchTimer = function () {
+        var which = 2;
+        var leftClick = setTimeout(function () {
+          which = 1;
+        }, 500);
+
+        that = this;
+        this.el.one('touchend', function () {
+          clearTimeout(leftClick);
+          that.handleClick.bind(that)({which:which});
+        });
+      };
+
+      this.el
+        .bind('touchstart', touchTimer.bind(this));
+    }
+    else {
+      this.el
+        .contextmenu(function (e) {
+          e.preventDefault();
+        })
+        .mousedown(this.handleClick.bind(this));
+    }
 
     // useful for testing
     if (hasMine && hint) this.el.addClass('hint');
