@@ -45,6 +45,7 @@ body {
   margin: 0px;
 }
 #board .tile {
+  z-index: 1;
   font-size: 16px;
   font-weight: bold;
   font-family: Helvetica Neue, Helvetica, Verdana, Arial, sans-serif;
@@ -74,21 +75,22 @@ body {
   background: #555;
 }
 #board .tile.correct {
-  background: #0c0;
+  background: hsl(220,70%,75%);
   color: #ddd;
 }
 #board .tile.incorrect {
-  /*background: #c00;*/
-  color: #ccc;
+  background: #ddd;
+  color: #c00;
   font-size: 200%;
+  z-index: 0;
   -webkit-animation-name: explode;
-  -webkit-animation-duration: 1s;
+  -webkit-animation-duration: 1.25s;
   -webkit-animation-fill-mode: forwards;
   -webkit-animation-timing-function: linear;
   -webkit-transform: translateZ(0); /* use GPU if possible */
 
   animation-name: explode;
-  animation-duration: 1s;
+  animation-duration: 1.25s;
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform: translateZ(0); /* use GPU if possible */
@@ -97,36 +99,45 @@ body {
 @keyframes explode {
   0% {
     background: inherit;
+    z-index: 2;
   }
-  20% {
+  5% {
     background: red;
-    transform: scale(2,2);
+    transform: scale(1.41421356,1.41421356);
     border-radius: 25px;
-    opacity: 0.5;
   }
   30% {
     background: yellow;
   }
   40% {
     background: white;
-    z-index: 1;
+    transform: scale(3,3);
+    opacity: 0.5;
   }
-  95% {
+  80% {
     border-radius: 25px;
     opacity: 0;
-    transform: scale(4,4);
+    transform: scale(6,6);
+    z-index: 0;
+  }
+  85% {
+    border-radius: 0;
+    opacity: 0;
+    transform: scale(1,1);
+    z-index: 0;
   }
   100% {
-    background: inherit;
+    z-index: 0;
   }
 }
 @-webkit-keyframes explode {
   0% {
     background: inherit;
+    z-index: 2;
   }
-  20% {
+  5% {
     background: red;
-    -webkit-transform: scale(2,2);
+    -webkit-transform: scale(1.41421356,1.41421356);
     border-radius: 25px;
     opacity: 0.5;
   }
@@ -135,14 +146,21 @@ body {
   }
   40% {
     background: white;
-    z-index: 1;
+    -webkit-transform: scale(3,3);
   }
-  95% {
+  85% {
     border-radius: 25px;
     opacity: 0;
-    -webkit-transform: scale(4,4);
+    -webkit-transform: scale(6,6);
+    z-index: 0;
+  }
+  86% {
+    border-radius: 0;
+    opacity: 0;
+    -webkit-transform: scale(1,1);
+    z-index: 0;
   }
   100% {
-    background: inherit;
+    z-index: 0;
   }
 }
