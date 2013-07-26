@@ -1,5 +1,5 @@
 var Game = (function () {
-  var Grid = function (el, mineProbability, numColumns, numRows, hints) {
+  var Grid = function (el, mineProbability, numColumns, numRows, easyMode, hints) {
       // init
       if (el === null || $(el).length === 0)
           throw new Error('Need a valid element for game grid!');
@@ -9,11 +9,28 @@ var Game = (function () {
       this.mineProbability = ( ! mineProbability)? (1/3): mineProbability;
       this.numColumns      = ( ! numColumns)? 5: numColumns;
       this.numRows         = ( ! numRows)? this.numColumns: numRows;
-      this.rows            = [];
-      this.numSafeTiles    = numRows * numColumns; // initial value
-      this.numMineTiles    = 0; // initial value
-      this.status          = null; // null = playing, true = won, false = lost
-      this.hints           = hints;
+      this.easyMode        = ( ! easyMode)? false: true;
+      this.hints           = ( ! hints)? false: true;
+
+      this.init();
+  };
+  Grid.prototype.init = function () {
+    this.rows            = [];
+    this.numSafeTiles    = this.numRows * this.numColumns; // initial value
+    this.numMineTiles    = 0; // initial value
+    this.status          = null; // null = playing, true = won, false = lost
+    this.$el.empty();
+    this.populate();
+
+    if (this.easyMode) {
+      that = this;
+      this.rows.forEach(function (row) {
+        row.forEach(function (tile) {
+          var surrounding = that.getSurroundingMineCount(tile.position);
+          if (surrounding === 0 && tile.hasMine === false) tile.check.bind(tile)();
+        });
+      });
+    }
   };
   Grid.prototype.populate = function () {
     for (var rowIndex = 0; rowIndex < this.numRows; rowIndex++) {

@@ -1,4 +1,3 @@
 $(function () {
-  var grid = new Game.Grid('#board', null, 9);
-  grid.populate();
+  var grid = new Game.Grid('#board', 0.2, 8, 12, true, true);
 });
