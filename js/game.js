@@ -69,6 +69,7 @@ var Game = (function () {
   };
 
   Grid.prototype.explode = function (tile) {
+    var that = this;
     var countDown = function (seconds) {
       if (seconds) {
         console.log("Restarting in "+seconds+" seconds");
@@ -77,7 +78,9 @@ var Game = (function () {
           countDown(--seconds);
         }, 1000);
       }
-      else window.location.reload();
+      else {
+        that.init();
+      }
     };
 
     if (this.status !== false) {
@@ -127,11 +130,11 @@ var Game = (function () {
       {rowBy:  1, columnBy:  0}, // B
       {rowBy:  1, columnBy:  1}  // BR
     ];
-    
+
     var allPositions       = allOffsets.map(getOffsetPosition, startingPosition);
     var validPositions     = allPositions.filter(this.positionExists, this);
     var surroundingTiles   = validPositions.map(this.getTileAtPosition, this);
-    
+
     return surroundingTiles;
   };
 
@@ -163,6 +166,7 @@ var Game = (function () {
     if (this.numSafeTiles === 0 && this.status === null) {
       this.status = true;
       console.log('You won!');
+      this.init();
     }
   };
 
@@ -208,9 +212,9 @@ var Game = (function () {
     if (hasMine && hint) this.el.addClass('hint');
   };
   Tile.prototype.handleClick = function (e) {
-    // left click
+    // left click or long-touch
     if (e.which == 1) this.check();
-    // middle or right click
+    // middle/right click or short-touch
     if (e.which > 1) this.toggleFlag();
   };
   Tile.prototype.toggleFlag = function () {
