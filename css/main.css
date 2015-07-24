@@ -32,41 +32,135 @@ body {
 }
 
 #board {
-  margin: 20px 0px 0px 0px;
+  margin: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 #board .row {
-  overflow: hidden;
-  margin: 0px 0px 1px 0px;
+  height: 50px;
+  margin: 1px 0px 1px 0px;
 }
 #board .row:last-child {
   margin: 0px;
 }
-#board .cell {
+#board .tile {
+  z-index: 1;
   font-size: 16px;
   font-weight: bold;
+  font-family: Helvetica Neue, Helvetica, Verdana, Arial, sans-serif;
   color: #fff;
   text-align: center;
   line-height: 50px;
-  background: #fff;
+  background: #ddd;
   display: block;
   float: left;
   width: 50px;
   height: 50px;
   margin: 0px 1px 0px 0px;
   cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.25s;
 }
-#board .cell:last-child {
+#board .tile:last-child {
   margin: 0px;
 }
-#board .cell:hover {
+#board .tile:hover {
   background: #f5f5f5;
 }
-#board .cell:active {
+#board .tile.hint:hover {
+  border: 1px solid #c00;
+}
+#board .tile:active {
   background: #555;
 }
-#board .cell.correct {
-  background: #0c0;
+#board .tile.correct {
+  background: hsl(220,70%,75%);
+  color: #ddd;
 }
-#board .cell.incorrect {
-  background: #c00;
+#board .tile.incorrect {
+  background: #ddd;
+  color: #c00;
+  font-size: 200%;
+  z-index: 0;
+  -webkit-animation-name: explode;
+  -webkit-animation-duration: 1.25s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-timing-function: linear;
+  -webkit-transform: translateZ(0); /* use GPU if possible */
+
+  animation-name: explode;
+  animation-duration: 1.25s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  transform: translateZ(0); /* use GPU if possible */
+}
+
+@keyframes explode {
+  0% {
+    background: inherit;
+    z-index: 2;
+  }
+  5% {
+    background: red;
+    transform: scale(1.41421356,1.41421356);
+    border-radius: 25px;
+  }
+  30% {
+    background: yellow;
+  }
+  40% {
+    background: white;
+    transform: scale(3,3);
+    opacity: 0.5;
+  }
+  80% {
+    border-radius: 25px;
+    opacity: 0;
+    transform: scale(6,6);
+    z-index: 0;
+  }
+  85% {
+    border-radius: 0;
+    opacity: 0;
+    transform: scale(1,1);
+    z-index: 0;
+  }
+  100% {
+    z-index: 0;
+  }
+}
+@-webkit-keyframes explode {
+  0% {
+    background: inherit;
+    z-index: 2;
+  }
+  5% {
+    background: red;
+    -webkit-transform: scale(1.41421356,1.41421356);
+    border-radius: 25px;
+    opacity: 0.5;
+  }
+  30% {
+    background: yellow;
+  }
+  40% {
+    background: white;
+    -webkit-transform: scale(3,3);
+  }
+  85% {
+    border-radius: 25px;
+    opacity: 0;
+    -webkit-transform: scale(6,6);
+    z-index: 0;
+  }
+  86% {
+    border-radius: 0;
+    opacity: 0;
+    -webkit-transform: scale(1,1);
+    z-index: 0;
+  }
+  100% {
+    z-index: 0;
+  }
 }
