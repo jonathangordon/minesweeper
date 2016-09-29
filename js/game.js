@@ -1,29 +1,55 @@
+/*global $ navigator */
 var Game = (function () {
-  var Grid = function (el, mineProbability, numColumns, numRows, easyMode, hints) {
-      // init
-      if (el === null || $(el).length === 0)
-          throw new Error('Need a valid element for game grid!');
+  var Grid = function (el, stats, mineProbability, numColumns, numRows, easyMode, hints) {
+    // init
+    if (el === null || $(el).length === 0)
+        throw new Error('Need a valid element for game grid!');
 
-      this.$el = $(el);
-      // should be a positive number less than 1
-      this.mineProbability = ( ! mineProbability)? (1/3): mineProbability;
-      this.numColumns      = ( ! numColumns)? 5: numColumns;
-      this.numRows         = ( ! numRows)? this.numColumns: numRows;
-      this.easyMode        = ( ! easyMode)? false: true;
-      this.hints           = ( ! hints)? false: true;
+    this.$el = $(el);
+    
+    if (stats === null || $(stats).length === 0)
+        throw new Error('Need a valid element for game stats!');
 
-      this.init();
+    this.$stats = $(stats);
+    
+    // should be a positive number less than 1
+    this.mineProbability = ( ! mineProbability)? (1/3): mineProbability;
+    this.totalPoints     = 0;
+    this.points          = 0;
+    this.rounds          = 0;
+    this.numColumns      = ( ! numColumns)? 5: numColumns;
+    this.numRows         = ( ! numRows)? this.numColumns: numRows;
+    this.easyMode        = ( ! easyMode)? false: true;
+    this.hints           = ( ! hints)? false: true;
+
+    this.init();
   };
   Grid.prototype.init = function () {
+    if (this.numSafeTiles === 0) {
+      var that = this;
+      this.rows.forEach(function (row) {
+        row.forEach(function (tile) {
+          if ( ! (tile.isLocked || tile.isExploded)) {
+            if (tile.hasMine && ! tile.isFlagged) that.points++;
+            if (tile.hasMine && tile.isFlagged) that.points += 2;
+            if (tile.isFlagged && ! tile.hasMine) that.points--;
+          }
+        });
+      });
+    }
+    $('.rounds', this.stats).text(++this.rounds);
+    this.totalPoints    += this.status===false? Math.min(this.points, -this.numMineTiles) : this.points;
+    this.points          = 0;
     this.rows            = [];
     this.numSafeTiles    = this.numRows * this.numColumns; // initial value
     this.numMineTiles    = 0; // initial value
     this.status          = null; // null = playing, true = won, false = lost
     this.$el.empty();
+    $('.score', this.$stats).text(this.totalPoints);
     this.populate();
 
     if (this.easyMode) {
-      that = this;
+      var that = this;
       this.rows.forEach(function (row) {
         row.forEach(function (tile) {
           if ( ! tile.hasMine) {
@@ -33,6 +59,25 @@ var Game = (function () {
         });
       });
     }
+    //$('.tile, .row').css('height', (Math.round($('#game').height() / (this.numRows + 2)) - 1) + 'px');
+    //$('.tile').css('width', (Math.floor(100 / this.numColumns * 10)) / 10 + '%');
+    //$('#board').css('top', (Math.round($('#game').height() / (this.numRows + 2))) + 'px');
+    //$('#board').css('bottom', (Math.round($('#game').height() / (this.numRows + 2))) + 'px');
+    //$('#actions, #stats').css('height', (Math.round($('#game').height() / (this.numRows + 2))) + 'px');
+  };
+  Grid.prototype.test = function () {
+    var that = this;
+    this.rows.forEach(function (row) {
+      row.forEach(function (tile) {
+        var result = tile.test();
+         
+        //if (result === true) ++that.points;
+        //if (result === false) --that.points && --that.numSafeTiles;
+        that.points += result;
+        if (result < 1) --that.numSafeTiles;
+      });
+    });
+    console.log('Points:', this.points)
   };
   Grid.prototype.populate = function () {
     for (var rowIndex = 0; rowIndex < this.numRows; rowIndex++) {
@@ -43,6 +88,7 @@ var Game = (function () {
     }
 
     console.log("Find all",this.numMineTiles,"mines.");
+    $('.minecount', this.$stats).text(this.numMineTiles);
   };
   Grid.prototype.newRow = function () {
     return $('<div>', {class: 'row'});
@@ -86,7 +132,7 @@ var Game = (function () {
 
     if (this.status !== false) {
       console.log("You died a horrible death.");
-      countDown(5);
+      countDown(1);
     }
 
     this.status = false;
@@ -160,13 +206,31 @@ var Game = (function () {
 
     --this.numSafeTiles;
     if (this.numSafeTiles === 0 && this.status === null) {
+      var that = this;
+      var countDown = function (seconds) {
+        if (seconds) {
+          console.log("Restarting in "+seconds+" seconds");
+  
+          setTimeout(function () {
+            countDown(--seconds);
+          }, 1000);
+        }
+        else {
+          that.init();
+        }
+      };
+  
+      if (this.status !== true) {
+        console.log('You won!');
+        countDown(1);
+      }
+  
       this.status = true;
-      console.log('You won!');
-      this.init();
     }
   };
 
   var Tile = function (hasMine, position, revealCallback, explodeCallback, hint) {
+    this.isLocked   = false;
     this.hasMine    = hasMine;
     this.isExploded = false;
     this.position   = position;
@@ -181,14 +245,18 @@ var Game = (function () {
 
     if (isTouch) {
       var touchTimer = function () {
-        var which = 2;
-        var leftClick = setTimeout(function () {
-          which = 1;
+        var which = 2; // shortTouch
+        var longTouch = setTimeout(function () {
+          which = 1; // longTouch
         }, 500);
+        var cancelTouch = setTimeout(function () {
+          which = 0; // cancelTouch
+        }, 2000)
 
-        that = this;
+        var that = this;
         this.el.one('touchend', function () {
-          clearTimeout(leftClick);
+          clearTimeout(longTouch);
+          clearTimeout(cancelTouch);
           that.handleClick.bind(that)({which:which});
         });
       };
@@ -214,7 +282,7 @@ var Game = (function () {
     if (e.which > 1) this.toggleFlag();
   };
   Tile.prototype.toggleFlag = function () {
-    if ( ! this.isRevealed &&  ! this.isExploded) {
+    if ( ! (this.isLocked || this.isRevealed || this.isExploded)) {
       if ( ! this.isFlagged) {
         this.isFlagged = true;
         this.setDisplay('&#9873;');
@@ -231,6 +299,24 @@ var Game = (function () {
       if (this.hasMine) this.explode(noChainReaction);
       else this.reveal();
     }
+  };
+  Tile.prototype.test = function () {
+    if ( ! this.isLocked) {
+      if (this.isFlagged) {
+        this.isLocked = true;
+        
+        if (this.hasMine) {
+          this.el.addClass('point')
+          return 1;
+        }
+        
+        if ( ! this.hasMine) {
+          this.el.addClass('nopoint')
+          return -1;
+        }
+      }
+    }
+    return 0;
   };
   Tile.prototype.setDisplay = function (content) {
     this.el.html(content);

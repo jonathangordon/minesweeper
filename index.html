@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>Minesweeper</title>
+    
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, width=device-width">
 
     <link href="css/main.css" rel="stylesheet">
 
@@ -12,13 +14,20 @@
 
   <body>
     <div id="game">
-      <!--ul id="actions">
-        <li><a href="#" id="actionNew">New Game</a></li>
-        <li><a href="#" id="actionValidate">Validate</a></li>
-        <li><a href="#" id="actionCheat">Cheat</a></li>
-      </ul-->
-
-      <div id="board"><div class="row"><div class="tile correct">0</div><div class="tile correct">0</div><div class="tile correct">1</div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div><div class="row"><div class="tile correct">1</div><div class="tile correct">1</div><div class="tile correct">2</div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div><div class="row"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div><div class="row"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div><div class="row"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile correct">2</div><div class="tile correct">1</div></div><div class="row"><div class="tile correct">2</div><div class="tile correct">3</div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile correct">2</div><div class="tile correct">0</div></div><div class="row"><div class="tile correct">0</div><div class="tile correct">1</div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile correct">2</div><div class="tile correct">1</div></div><div class="row"><div class="tile correct">2</div><div class="tile correct">2</div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div><div class="row"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div></div></div>
+        <div id="stats">
+          <span class="stat">POINTS: <span class="score"></span></span>
+          <span class="stat">MINES: <span class="minecount"></span></span>
+          <span class="stat">FLAGS: <span class="flagcount"></span></span>
+          <span class="stat">ROUNDS: <span class="rounds"></span></span>
+        </div>
+      <div id="board"></div>
+      <div id="actions">
+        <ul>
+          <li><button id="newgame">New Game</button></li>
+          <li><button id="test">Test</button></li>
+          <!--<li><button id="cheat">Cheat</button></li>-->
+        </ul>
+      </div>
     </div>
   </body>
 </html>

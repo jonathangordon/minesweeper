@@ -1,20 +1,44 @@
 body {
   font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
-  margin: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 #game {
   background: #eee;
-  display: inline-block;
-  padding: 20px;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 
+#stats {
+  flex: none;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+#stats .stat {
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+}
 #actions {
+  flex: none;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+#actions ul {
   margin: 0px;
   padding: 0px;
   list-style: none;
-  overflow: hidden;
 }
 #actions li {
   float: left;
@@ -36,31 +60,36 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 #board .row {
-  height: 50px;
   margin: 1px 0px 1px 0px;
+  flex: 1;
+  display: flex;
 }
 #board .row:last-child {
   margin: 0px;
 }
 #board .tile {
+  flex: 1;
   z-index: 1;
   font-size: 16px;
   font-weight: bold;
   font-family: Helvetica Neue, Helvetica, Verdana, Arial, sans-serif;
   color: #fff;
   text-align: center;
-  line-height: 50px;
+  line-height: 400%;
   background: #ddd;
-  display: block;
+  display: flex;
   float: left;
-  width: 50px;
-  height: 50px;
   margin: 0px 1px 0px 0px;
   cursor: pointer;
   box-sizing: border-box;
   transition: background 0.25s;
+  align-items: center;
+  justify-content: center;
 }
 #board .tile:last-child {
   margin: 0px;
@@ -69,10 +98,14 @@ body {
   background: #f5f5f5;
 }
 #board .tile.hint:hover {
-  border: 1px solid #c00;
+  background: #fff5f5;
 }
 #board .tile:active {
   background: #555;
+}
+#board .tile.point {
+  background: #B5D993;
+  color: #ffffff;
 }
 #board .tile.correct {
   background: hsl(220,70%,75%);
@@ -94,6 +127,14 @@ body {
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform: translateZ(0); /* use GPU if possible */
+}
+#board .tile.point {
+  background: #B5D993;
+  color: #ffffff;
+}
+#board .tile.nopoint {
+  background: #FADB7F;
+  color: #ffffff;
 }
 
 @keyframes explode {
